@@ -18,15 +18,15 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Part = { id: string; name: string; desc: string; price: string };
+type Part = { id: string; name: string; desc: string; price: string; href: string; anchor: string };
+const KB = "https://www.walmart.com/ip/Razer-BlackWidow-V3-Full-Size-Mechanical-Gaming-Keyboard-for-PC-Chroma-RGB-Wrist-Rest-Black/606378872";
+const MOUSE = "https://www.amazon.com/Logitech-LIGHTSPEED-Wireless-Gaming-Mouse/dp/B07CMS5Q6P";
+const MON = "https://a.co/d/0ba15Nwm";
 const PARTS: Part[] = [
-  { id: "case", name: "Case", desc: "Airflow-focused mid tower that keeps everything cool and quiet.", price: "$50 – $90" },
-  { id: "mobo", name: "Motherboard", desc: "AM4 board tying it all together, with Wi‑Fi 6 built in.", price: "$80 – $130" },
-  { id: "cpu", name: "CPU · Ryzen 5 5600", desc: "6 cores / 12 threads — smooth gaming while recording and encoding.", price: "$110 – $140" },
-  { id: "ram", name: "RAM · 16GB DDR4", desc: "Enough memory to run games, OBS and editing tools at once.", price: "$35 – $55" },
-  { id: "gpu", name: "GPU · RX 6600 8GB", desc: "Solid 1080p performance and hardware encoding for clean streams.", price: "$190 – $230" },
-  { id: "storage", name: "Storage · 1TB NVMe", desc: "Fast SSD for quick loads and room for raw video footage.", price: "$50 – $75" },
-  { id: "psu", name: "PSU", desc: "Reliable power supply that keeps the system stable under load.", price: "$45 – $80" },
+  { id: "pc", name: "HZG M500 Gaming PC", desc: "Ryzen 5 5600 + RX 6600 — records and streams cleanly. The main goal.", price: "$809", href: NEWEGG, anchor: "#pc" },
+  { id: "monitor", name: "Monitor", desc: "A clearer, more comfortable screen for long editing sessions.", price: "$100 – $200", href: MON, anchor: "#gift-monitor" },
+  { id: "keyboard", name: "Razer BlackWidow V3", desc: "Full-size mechanical keyboard with wrist rest — reliable and responsive.", price: "$70 – $140", href: KB, anchor: "#gift-keyboard" },
+  { id: "mouse", name: "Logitech LIGHTSPEED Mouse", desc: "Low-latency wireless gaming mouse with long battery life.", price: "$40 – $80", href: MOUSE, anchor: "#gift-mouse" },
 ];
 
 function Index() {
@@ -59,14 +59,15 @@ function Index() {
         </p>
       </section>
 
+      
       <Diagram />
 
       <section className="mt-20">
         <h2 className="text-2xl font-bold sm:text-3xl">Too expensive? Here are some cheaper gift options</h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <Gift label="Keyboard" name="Razer BlackWidow V3 Mechanical" href="https://www.walmart.com/ip/Razer-BlackWidow-V3-Full-Size-Mechanical-Gaming-Keyboard-for-PC-Chroma-RGB-Wrist-Rest-Black/606378872" />
-          <Gift label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href="https://www.amazon.com/Logitech-LIGHTSPEED-Wireless-Gaming-Mouse/dp/B07CMS5Q6P" />
-          <Gift label="Monitor" name="Recommended option" href="https://a.co/d/0ba15Nwm" />
+          <Gift id="gift-keyboard" label="Keyboard" name="Razer BlackWidow V3 Mechanical" href="https://www.walmart.com/ip/Razer-BlackWidow-V3-Full-Size-Mechanical-Gaming-Keyboard-for-PC-Chroma-RGB-Wrist-Rest-Black/606378872" />
+          <Gift id="gift-mouse" label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href="https://www.amazon.com/Logitech-LIGHTSPEED-Wireless-Gaming-Mouse/dp/B07CMS5Q6P" />
+          <Gift id="gift-monitor" label="Monitor" name="Recommended option" href="https://a.co/d/0ba15Nwm" />
           <Gift label="Monitor" name="Cheaper option" href="https://a.co/d/0fpgdMh4" note="It is cheaper, but not as easy on my eyes." />
         </div>
       </section>
@@ -95,9 +96,9 @@ function Index() {
   );
 }
 
-function Gift({ label, name, href, note }: { label: string; name: string; href: string; note?: string }) {
+function Gift({ id, label, name, href, note }: { id?: string; label: string; name: string; href: string; note?: string }) {
   return (
-    <div className="card-soft flex flex-col p-6">
+    <div id={id} className="card-soft flex scroll-mt-6 flex-col p-6">
       <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
       <h3 className="mt-2 text-lg font-semibold">{name}</h3>
       {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
@@ -107,7 +108,7 @@ function Gift({ label, name, href, note }: { label: string; name: string; href: 
 }
 
 function Diagram() {
-  const [active, setActive] = useState<string>("gpu");
+  const [active, setActive] = useState<string>("pc");
   const part = PARTS.find((p) => p.id === active)!;
   const bind = (id: string) => ({
     "data-active": active === id,
@@ -117,26 +118,34 @@ function Diagram() {
   });
   return (
     <section className="mt-20">
-      <h2 className="text-2xl font-bold sm:text-3xl">What’s inside</h2>
-      <p className="mt-2 text-muted-foreground">Hover or tap a part to see what it does.</p>
+      <h2 className="text-2xl font-bold sm:text-3xl">The full setup</h2>
+      <p className="mt-2 text-muted-foreground">Hover or tap any item to see details.</p>
       <div className="mt-8 grid items-center gap-6 md:grid-cols-[1fr_320px]">
-        <svg viewBox="0 0 400 460" className="mx-auto w-full max-w-md">
-          <rect x="10" y="10" width="380" height="440" rx="18" {...bind("case")} />
-          <rect x="40" y="40" width="250" height="280" rx="8" {...bind("mobo")} />
-          <rect x="130" y="70" width="70" height="70" rx="6" {...bind("cpu")} />
-          <rect x="225" y="60" width="12" height="100" rx="3" {...bind("ram")} />
-          <rect x="245" y="60" width="12" height="100" rx="3" {...bind("ram")} />
-          <rect x="60" y="200" width="290" height="50" rx="6" {...bind("gpu")} />
-          <rect x="70" y="160" width="90" height="18" rx="4" {...bind("storage")} />
-          <rect x="40" y="350" width="150" height="80" rx="8" {...bind("psu")} />
-          <circle cx="345" cy="100" r="30" className="fill-none stroke-border" strokeWidth="1.5" />
-          <circle cx="345" cy="180" r="30" className="fill-none stroke-border" strokeWidth="1.5" />
+        <svg viewBox="0 0 520 340" className="mx-auto w-full max-w-xl">
+          <line x1="10" y1="300" x2="510" y2="300" className="stroke-border" strokeWidth="2" />
+          <g {...bind("monitor")}>
+            <rect x="110" y="30" width="250" height="150" rx="10" />
+            <rect x="222" y="180" width="26" height="50" rx="3" />
+            <rect x="180" y="228" width="110" height="10" rx="4" />
+          </g>
+          <g {...bind("pc")}>
+            <rect x="400" y="100" width="100" height="200" rx="10" />
+            <circle cx="450" cy="150" r="22" className="fill-none" />
+            <circle cx="450" cy="210" r="22" className="fill-none" />
+          </g>
+          <g {...bind("keyboard")}>
+            <rect x="100" y="255" width="230" height="38" rx="6" />
+          </g>
+          <g {...bind("mouse")}>
+            <rect x="345" y="255" width="30" height="42" rx="15" />
+          </g>
         </svg>
         <div key={part.id} className="card-soft fade-up p-6" style={{ boxShadow: "var(--glow)" }}>
           <h3 className="text-lg font-semibold text-primary">{part.name}</h3>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{part.desc}</p>
-          <p className="mt-4 text-sm"><span className="text-muted-foreground">Price range: </span><span className="font-semibold">{part.price}</span></p>
-          <a href="#pc" className="btn-primary mt-5 w-full px-4 py-2.5 text-sm">Buy</a>
+          <p className="mt-4 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{part.price}</span></p>
+          <a href={part.href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-5 w-full px-4 py-2.5 text-sm">Buy</a>
+          <a href={part.anchor} className="btn-ghost mt-2 w-full px-4 py-2 text-sm">Jump to card ↓</a>
         </div>
       </div>
     </section>
