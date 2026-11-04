@@ -8,7 +8,9 @@ const KB =
 const MOUSE = "https://www.amazon.com/Logitech-LIGHTSPEED-Wireless-Gaming-Mouse/dp/B07CMS5Q6P";
 const MON = "https://www.amazon.com/dp/B0CWCWL81G";
 const MON_CHEAP = "https://www.amazon.com/dp/B0F9TK1RFC";
-const DISCORD = "https://discord.com/nitro";
+const WMT_DISCORD_25 =
+  "https://www.walmart.com/ip/Discord-25-Gift-Card-Digital/20844423221?classType=REGULAR";
+const TGT_DISCORD_50 = "https://www.target.com/p/50-discord-gift-card-email-delivery/-/A-1013327745";
 const ROBLOX = "https://www.roblox.com/giftcards";
 
 export const Route = createFileRoute("/")({
@@ -34,9 +36,29 @@ const PARTS: Part[] = [
   { id: "mouse", name: "Logitech LIGHTSPEED Mouse", desc: "Low-latency wireless gaming mouse with long battery life.", price: "$30", href: MOUSE, store: "Amazon", anchor: "#gift-mouse" },
 ];
 
-const GIFTCARDS = [
-  { id: "gift-discord", name: "Discord Nitro Gift Cards", store: "Discord", href: DISCORD },
-  { id: "gift-roblox", name: "Roblox Gift Cards", store: "Roblox", href: ROBLOX },
+type Amount = { label: string; href: string; store: string };
+const GIFTCARDS: { id: string; name: string; store: string; href: string; amounts: Amount[] }[] = [
+  {
+    id: "gift-discord",
+    name: "Discord Nitro Gift Cards",
+    store: "Walmart",
+    href: WMT_DISCORD_25,
+    amounts: [
+      { label: "$25", href: WMT_DISCORD_25, store: "Walmart" },
+      { label: "$50", href: TGT_DISCORD_50, store: "Target" },
+    ],
+  },
+  {
+    id: "gift-roblox",
+    name: "Roblox Gift Cards",
+    store: "Roblox",
+    href: ROBLOX,
+    amounts: [
+      { label: "$30", href: ROBLOX, store: "Roblox" },
+      { label: "$50", href: ROBLOX, store: "Roblox" },
+      { label: "$100", href: ROBLOX, store: "Roblox" },
+    ],
+  },
 ];
 
 function Index() {
