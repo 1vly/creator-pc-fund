@@ -8,7 +8,9 @@ const KB =
 const MOUSE = "https://www.amazon.com/Logitech-LIGHTSPEED-Wireless-Gaming-Mouse/dp/B07CMS5Q6P";
 const MON = "https://www.amazon.com/dp/B0CWCWL81G";
 const MON_CHEAP = "https://www.amazon.com/dp/B0F9TK1RFC";
-const DISCORD = "https://discord.com/nitro";
+const WMT_DISCORD_25 =
+  "https://www.walmart.com/ip/Discord-25-Gift-Card-Digital/20844423221?classType=REGULAR";
+const TGT_DISCORD_50 = "https://www.target.com/p/50-discord-gift-card-email-delivery/-/A-1013327745";
 const ROBLOX = "https://www.roblox.com/giftcards";
 
 export const Route = createFileRoute("/")({
@@ -34,9 +36,29 @@ const PARTS: Part[] = [
   { id: "mouse", name: "Logitech LIGHTSPEED Mouse", desc: "Low-latency wireless gaming mouse with long battery life.", price: "$30", href: MOUSE, store: "Amazon", anchor: "#gift-mouse" },
 ];
 
-const GIFTCARDS = [
-  { id: "gift-discord", name: "Discord Nitro Gift Cards", store: "Discord", href: DISCORD },
-  { id: "gift-roblox", name: "Roblox Gift Cards", store: "Roblox", href: ROBLOX },
+type Amount = { label: string; href: string; store: string };
+const GIFTCARDS: { id: string; name: string; store: string; href: string; amounts: Amount[] }[] = [
+  {
+    id: "gift-discord",
+    name: "Discord Nitro Gift Cards",
+    store: "Walmart",
+    href: WMT_DISCORD_25,
+    amounts: [
+      { label: "$25", href: WMT_DISCORD_25, store: "Walmart" },
+      { label: "$50", href: TGT_DISCORD_50, store: "Target" },
+    ],
+  },
+  {
+    id: "gift-roblox",
+    name: "Roblox Gift Cards",
+    store: "Roblox",
+    href: ROBLOX,
+    amounts: [
+      { label: "$30", href: ROBLOX, store: "Roblox" },
+      { label: "$50", href: ROBLOX, store: "Roblox" },
+      { label: "$100", href: ROBLOX, store: "Roblox" },
+    ],
+  },
 ];
 
 function Index() {
@@ -91,16 +113,17 @@ function Index() {
           {GIFTCARDS.map((c) => (
             <div key={c.id} id={c.id} className="card-soft scroll-mt-6 p-6">
               <h3 className="text-lg font-semibold">{c.name}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">Digital gift card · starting at $30</p>
-              <div className="mt-5 grid grid-cols-3 gap-2">
-                {["$30", "$50", "$100"].map((p) => (
-                  <a key={p} href={c.href} target="_blank" rel="noopener noreferrer" className="btn-ghost py-3 text-sm">
-                    {p}
+              <p className="mt-1 text-sm text-muted-foreground">Digital gift card · tap an amount to open its store page</p>
+              <div className="mt-5 grid gap-2" style={{ gridTemplateColumns: `repeat(${c.amounts.length}, minmax(0, 1fr))` }}>
+                {c.amounts.map((a) => (
+                  <a key={a.label + a.store} href={a.href} target="_blank" rel="noopener noreferrer" className="btn-ghost flex flex-col items-center gap-1 py-3 text-sm">
+                    <span className="text-base font-bold">{a.label}</span>
+                    <span className="text-xs font-normal text-muted-foreground">{a.store}</span>
                   </a>
                 ))}
               </div>
               <a href={c.href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-5 w-full px-4 py-3 text-sm">
-                Buy a {c.store} gift card →
+                Buy on {c.store} →
               </a>
               <p className="mt-3 text-xs text-muted-foreground">Opens {c.store} in a new tab.</p>
             </div>
