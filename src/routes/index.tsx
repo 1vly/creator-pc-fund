@@ -137,11 +137,13 @@ function Index() {
 function Gift({ id, label, name, href, store, note, price }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string }) {
   return (
     <div id={id} className="card-soft flex scroll-mt-6 flex-col p-6">
-      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
-      <h3 className="mt-2 text-lg font-semibold">{name}</h3>
-      {price && <p className="mt-2 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{price}</span></p>}
-      {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
-      <a href={href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-5 px-4 py-3 text-sm">
+      <div className="mb-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
+        <h3 className="mt-2 text-lg font-semibold">{name}</h3>
+        {price && <p className="mt-2 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{price}</span></p>}
+        {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
+      </div>
+      <a href={href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-auto px-4 py-3 text-sm">
         Buy on {store} →
       </a>
     </div>
