@@ -78,6 +78,13 @@
   }
 }
 
+@utility card-done {
+  background: var(--muted);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  border-radius: var(--radius-xl);
+  opacity: 0.65;
+}
+
 @utility btn-primary {
   display: inline-flex;
   align-items: center;
@@ -113,6 +120,11 @@
     fill: var(--accent);
     stroke: var(--primary);
     filter: drop-shadow(0 0 8px color-mix(in oklab, var(--primary) 70%, transparent));
+  }
+  &[data-acquired="true"] {
+    fill: var(--muted);
+    stroke: color-mix(in oklab, var(--muted-foreground) 40%, transparent);
+    filter: none;
   }
 }
 
