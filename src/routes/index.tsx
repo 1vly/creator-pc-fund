@@ -4,7 +4,7 @@ import { useState } from "react";
 const NEWEGG =
   "https://www.newegg.com/hzg-gaming-desktop-pcs-amd-radeon-graphics-amd-ryzen-5-5600-16gb-ddr4-1tb-nvme-ssd-m50/p/3D5-006P-00028";
 const KB =
-  "https://www.walmart.com/ip/Razer-BlackWidow-V3-Full-Size-Mechanical-Gaming-Keyboard-for-PC-Chroma-RGB-Wrist-Rest-Black/606378872";
+  "https://www.walmart.com/ip/SteelSeries-Apex-3-TKL-RGB-Gaming-Keyboard-Tenkeyless-Water-Dust-Resistant-PC-and-USB-A/996783321";
 const MOUSE = "https://www.amazon.com/Logitech-LIGHTSPEED-Wireless-Gaming-Mouse/dp/B07CMS5Q6P";
 const MON = "https://www.amazon.com/dp/B0CWCWL81G";
 const MON_CHEAP = "https://www.amazon.com/dp/B0F9TK1RFC";
@@ -32,7 +32,7 @@ type Part = { id: string; name: string; desc: string; price: string; href: strin
 const PARTS: Part[] = [
   { id: "pc", name: "HZG M500 Gaming PC", desc: "Ryzen 5 5600 + RX 6600 — records and streams cleanly. The main goal.", price: "$809", href: NEWEGG, store: "Newegg", anchor: "#pc" },
   { id: "monitor", name: "Monitor", desc: "A clearer, more comfortable screen for long editing sessions.", price: "$100 – $200", href: MON, store: "Amazon", anchor: "#gift-monitor" },
-  { id: "keyboard", name: "Razer BlackWidow V3", desc: "Full-size mechanical keyboard with wrist rest — reliable and responsive.", price: "$70 – $140", href: KB, store: "Walmart", anchor: "#gift-keyboard", acquired: true },
+  { id: "keyboard", name: "SteelSeries Apex 3 TKL", desc: "Tenkeyless RGB gaming keyboard — water and dust resistant.", price: "$70 – $140", href: KB, store: "Walmart", anchor: "#gift-keyboard", acquired: true },
   { id: "mouse", name: "Logitech LIGHTSPEED Mouse", desc: "Low-latency wireless gaming mouse with long battery life.", price: "$30", href: MOUSE, store: "Amazon", anchor: "#gift-mouse" },
 ];
 
@@ -102,7 +102,7 @@ function Index() {
         <h2 className="text-2xl font-bold sm:text-3xl">Too expensive? Here are some cheaper gift options</h2>
         <p className="mt-2 text-muted-foreground">Every button opens that item’s real store page in a new tab.</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <Gift id="gift-keyboard" label="Keyboard" name="Razer BlackWidow V3 Mechanical" href={KB} store="Walmart" acquired />
+          <Gift id="gift-keyboard" label="Keyboard" name="SteelSeries Apex 3 TKL RGB" href={KB} store="Walmart" acquired />
           <Gift id="gift-mouse" label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href={MOUSE} store="Amazon" price="$30" />
           <Gift id="gift-monitor" label="Monitor" name="Recommended option" href={MON} store="Amazon" />
           <Gift label="Monitor" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." />
@@ -197,7 +197,7 @@ function Diagram() {
         <div key={part.id} className="card-soft fade-up p-6" style={{ boxShadow: "var(--glow)" }}>
           <h3 className="text-lg font-semibold text-primary">{part.name}</h3>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{part.desc}</p>
-          <p className="mt-4 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{part.price}</span></p>
+          {!part.acquired && <p className="mt-4 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{part.price}</span></p>}
           {part.acquired ? (
             <div className="mt-5 rounded-lg border border-border px-4 py-2.5 text-center text-sm font-semibold text-muted-foreground">Already acquired ✓</div>
           ) : (
