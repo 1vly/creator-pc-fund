@@ -27,12 +27,12 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Part = { id: string; name: string; desc: string; price: string; href: string; store: string; anchor: string };
+type Part = { id: string; name: string; desc: string; price: string; href: string; store: string; anchor: string; acquired?: boolean };
 
 const PARTS: Part[] = [
   { id: "pc", name: "HZG M500 Gaming PC", desc: "Ryzen 5 5600 + RX 6600 — records and streams cleanly. The main goal.", price: "$809", href: NEWEGG, store: "Newegg", anchor: "#pc" },
   { id: "monitor", name: "Monitor", desc: "A clearer, more comfortable screen for long editing sessions.", price: "$100 – $200", href: MON, store: "Amazon", anchor: "#gift-monitor" },
-  { id: "keyboard", name: "Razer BlackWidow V3", desc: "Full-size mechanical keyboard with wrist rest — reliable and responsive.", price: "$70 – $140", href: KB, store: "Walmart", anchor: "#gift-keyboard" },
+  { id: "keyboard", name: "Razer BlackWidow V3", desc: "Full-size mechanical keyboard with wrist rest — reliable and responsive.", price: "$70 – $140", href: KB, store: "Walmart", anchor: "#gift-keyboard", acquired: true },
   { id: "mouse", name: "Logitech LIGHTSPEED Mouse", desc: "Low-latency wireless gaming mouse with long battery life.", price: "$30", href: MOUSE, store: "Amazon", anchor: "#gift-mouse" },
 ];
 
@@ -63,17 +63,17 @@ const GIFTCARDS: { id: string; name: string; store: string; href: string; amount
 
 function Index() {
   return (
-    <main className="mx-auto max-w-5xl px-5 py-16 sm:py-24">
+    <main className="mx-auto max-w-5xl px-5 pt-8 pb-16 sm:pt-12 sm:pb-24">
       <section className="max-w-3xl">
         <h1 className="fade-up text-4xl font-bold tracking-tight sm:text-6xl">Let’s get to the point.</h1>
-        <p className="fade-up-1 mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+        <p className="fade-up-1 mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
           I need a better PC so I can make better videos for YouTube and finally get monetized. Anyone who helps
           pool money toward this PC will receive money back over time — even before I get fully monetized.
         </p>
       </section>
 
-      <section id="pc" className="card-soft fade-up-2 mt-14 p-6 sm:p-10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Primary goal</p>
+      <section id="pc" className="card-soft fade-up-2 mt-8 p-6 sm:p-10">
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Top priority — the main goal</p>
         <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
           <h2 className="text-2xl font-bold sm:text-3xl">HZG M500 Gaming PC</h2>
           <span className="text-3xl font-bold text-primary">$809</span>
@@ -89,6 +89,11 @@ function Index() {
         <p className="mt-4 text-sm text-muted-foreground">
           This is the one I need most. It will let me record and stream cleanly so I can start earning and pay people back.
         </p>
+        <div className="mt-6 rounded-xl border border-border bg-secondary p-4 text-sm leading-relaxed text-muted-foreground">
+          <span className="font-semibold text-foreground">Real talk: </span>
+          one person isn’t going to buy this for me. This is meant to be pooled — a few people putting their money
+          together to get it. Everyone who is part of pooling gets money back over time, even before I’m fully monetized.
+        </div>
       </section>
 
       <Diagram />
@@ -97,7 +102,7 @@ function Index() {
         <h2 className="text-2xl font-bold sm:text-3xl">Too expensive? Here are some cheaper gift options</h2>
         <p className="mt-2 text-muted-foreground">Every button opens that item’s real store page in a new tab.</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <Gift id="gift-keyboard" label="Keyboard" name="Razer BlackWidow V3 Mechanical" href={KB} store="Walmart" />
+          <Gift id="gift-keyboard" label="Keyboard" name="Razer BlackWidow V3 Mechanical" href={KB} store="Walmart" acquired />
           <Gift id="gift-mouse" label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href={MOUSE} store="Amazon" price="$30" />
           <Gift id="gift-monitor" label="Monitor" name="Recommended option" href={MON} store="Amazon" />
           <Gift label="Monitor" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." />
@@ -134,18 +139,22 @@ function Index() {
   );
 }
 
-function Gift({ id, label, name, href, store, note, price }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string }) {
+function Gift({ id, label, name, href, store, note, price, acquired }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string; acquired?: boolean }) {
   return (
-    <div id={id} className="card-soft flex scroll-mt-6 flex-col p-6">
+    <div id={id} className={`${acquired ? "card-done" : "card-soft"} flex scroll-mt-6 flex-col p-6`}>
       <div className="mb-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
         <h3 className="mt-2 text-lg font-semibold">{name}</h3>
         {price && <p className="mt-2 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{price}</span></p>}
         {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
       </div>
-      <a href={href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-auto px-4 py-3 text-sm">
-        Buy on {store} →
-      </a>
+      {acquired ? (
+        <div className="mt-auto rounded-lg border border-border px-4 py-3 text-center text-sm font-semibold text-muted-foreground">Already acquired ✓</div>
+      ) : (
+        <a href={href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-auto px-4 py-3 text-sm">
+          Buy on {store} →
+        </a>
+      )}
     </div>
   );
 }
@@ -153,8 +162,9 @@ function Gift({ id, label, name, href, store, note, price }: { id?: string; labe
 function Diagram() {
   const [active, setActive] = useState<string>("pc");
   const part = PARTS.find((p) => p.id === active)!;
-  const bind = (id: string) => ({
+  const bind = (id: string, acquired = false) => ({
     "data-active": active === id,
+    "data-acquired": acquired || undefined,
     onMouseEnter: () => setActive(id),
     onClick: () => setActive(id),
     className: "part",
@@ -176,8 +186,9 @@ function Diagram() {
             <circle cx="450" cy="150" r="22" className="fill-none" />
             <circle cx="450" cy="210" r="22" className="fill-none" />
           </g>
-          <g {...bind("keyboard")}>
+          <g {...bind("keyboard", true)}>
             <rect x="100" y="255" width="230" height="38" rx="6" />
+            <text x="215" y="279" textAnchor="middle" className="fill-muted-foreground text-[11px] font-semibold">Already acquired</text>
           </g>
           <g {...bind("mouse")}>
             <rect x="345" y="255" width="30" height="42" rx="15" />
@@ -187,10 +198,14 @@ function Diagram() {
           <h3 className="text-lg font-semibold text-primary">{part.name}</h3>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{part.desc}</p>
           <p className="mt-4 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{part.price}</span></p>
-          <a href={part.href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-5 w-full px-4 py-2.5 text-sm">
-            Buy on {part.store} →
-          </a>
-          <a href={part.anchor} className="btn-ghost mt-2 w-full px-4 py-2 text-sm">Jump to card ↓</a>
+          {part.acquired ? (
+            <div className="mt-5 rounded-lg border border-border px-4 py-2.5 text-center text-sm font-semibold text-muted-foreground">Already acquired ✓</div>
+          ) : (
+            <a href={part.href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-5 w-full px-4 py-2.5 text-sm">
+              Buy on {part.store} →
+            </a>
+          )}
+          {!part.acquired && <a href={part.anchor} className="btn-ghost mt-2 w-full px-4 py-2 text-sm">Jump to card ↓</a>}
         </div>
       </div>
     </section>
