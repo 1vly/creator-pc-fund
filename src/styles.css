@@ -52,6 +52,7 @@
   --border: oklch(1 0 0 / 9%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.95 0.005 260);
+  --warning: oklch(0.82 0.15 80);
   --glow: 0 0 24px color-mix(in oklab, var(--primary) 45%, transparent);
 }
 
@@ -162,4 +163,16 @@
   .fade-up, .fade-up-1, .fade-up-2, .fade-up-3, .fade-up-4 {
     animation: none;
   }
+}
+
+@utility warn {
+  border: 1px solid color-mix(in oklab, var(--warning) 45%, transparent);
+  background: color-mix(in oklab, var(--warning) 8%, var(--card));
+  border-radius: var(--radius-lg);
+  color: var(--muted-foreground);
+  & > span { color: var(--warning); }
+}
+@utility warn-strong {
+  border-width: 2px;
+  background: color-mix(in oklab, var(--warning) 14%, var(--card));
 }

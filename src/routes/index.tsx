@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import type React from "react";
 
 const NEWEGG =
   "https://www.newegg.com/hzg-gaming-desktop-pcs-amd-radeon-graphics-amd-ryzen-5-5600-16gb-ddr4-1tb-nvme-ssd-m50/p/3D5-006P-00028";
@@ -61,81 +62,125 @@ const GIFTCARDS: { id: string; name: string; store: string; href: string; amount
   },
 ];
 
+function Warn({ children, strong }: { children: React.ReactNode; strong?: boolean }) {
+  return (
+    <div role="note" className={`warn ${strong ? "warn-strong" : ""} flex items-start gap-3 p-4 text-sm leading-relaxed`}>
+      <span aria-hidden className="mt-0.5 text-base">⚠</span>
+      <div>{children}</div>
+    </div>
+  );
+}
+
 function Index() {
   return (
-    <main className="mx-auto max-w-5xl px-5 pt-8 pb-16 sm:pt-12 sm:pb-24">
-      <section className="max-w-3xl">
-        <h1 className="fade-up text-4xl font-bold tracking-tight sm:text-6xl">Let’s get to the point.</h1>
-        <p className="fade-up-1 mt-4 text-lg leading-relaxed text-muted-foreground sm:text-xl">
-          I need a better PC so I can make better videos for YouTube and finally get monetized. Anyone who helps
-          pool money toward this PC will receive money back over time — even before I get fully monetized.
-        </p>
-      </section>
+    <>
+      <header className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur">
+        <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 text-sm">
+          <span className="font-display font-bold tracking-tight">PC Fund</span>
+          <div className="flex items-center gap-4 text-muted-foreground">
+            <a href="#setup" className="hidden hover:text-foreground sm:inline">Setup</a>
+            <a href="#gifts" className="hidden hover:text-foreground sm:inline">Gifts</a>
+            <a href="#pc" className="btn-primary px-3 py-1.5 text-xs">Fund the PC</a>
+          </div>
+        </nav>
+      </header>
+      <main className="mx-auto max-w-6xl px-5 pt-10 pb-16 sm:pt-16 sm:pb-24">
+        <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-12">
+          <section className="lg:sticky lg:top-24">
+            <p className="fade-up text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">YouTube PC Fund</p>
+            <h1 className="fade-up mt-3 text-4xl font-bold tracking-tight sm:text-6xl">Let’s get to the point.</h1>
+            <p className="fade-up-1 mt-5 text-lg leading-relaxed text-muted-foreground">
+              I need a better PC so I can make better videos for YouTube and finally get monetized. Anyone who helps
+              pool money toward this PC will receive money back over time — even before I get fully monetized.
+            </p>
+            <ol className="fade-up-2 mt-8 space-y-3 text-sm">
+              {["Pool money toward the PC", "I record & upload better videos", "Everyone who pooled gets paid back over time"].map((t, i) => (
+                <li key={t} className="flex items-center gap-3">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-xs font-bold">{i + 1}</span>
+                  <span className="text-muted-foreground">{t}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
 
-      <section id="pc" className="card-soft fade-up-2 mt-8 p-6 sm:p-10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Top priority — the main goal</p>
-        <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
-          <h2 className="text-2xl font-bold sm:text-3xl">HZG M500 Gaming PC</h2>
-          <span className="text-3xl font-bold text-primary">$809</span>
-        </div>
-        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {["Ryzen 5 5600", "RX 6600 8GB", "16GB RAM", "1TB SSD", "Windows 11", "Wi‑Fi 6"].map((s) => (
-            <li key={s} className="rounded-lg border border-border bg-secondary px-4 py-3 text-sm font-medium">{s}</li>
-          ))}
-        </ul>
-        <a href={NEWEGG} target="_blank" rel="noopener noreferrer" className="btn-primary mt-8 w-full px-6 py-4 text-lg">
-          View & Buy on Newegg →
-        </a>
-        <p className="mt-4 text-sm text-muted-foreground">
-          This is the one I need most. It will let me record and stream cleanly so I can start earning and pay people back.
-        </p>
-        <div className="mt-6 rounded-xl border border-border bg-secondary p-4 text-sm leading-relaxed text-muted-foreground">
-          <span className="font-semibold text-foreground">Real talk: </span>
-          one person isn’t going to buy this for me. This is meant to be pooled — a few people putting their money
-          together to get it. Everyone who is part of pooling gets money back over time, even before I’m fully monetized.
-        </div>
-      </section>
-
-      <Diagram />
-
-      <section className="fade-up mt-20">
-        <h2 className="text-2xl font-bold sm:text-3xl">Too expensive? Here are some cheaper gift options</h2>
-        <p className="mt-2 text-muted-foreground">Every button opens that item’s real store page in a new tab.</p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <Gift id="gift-keyboard" label="Keyboard" name="SteelSeries Apex 3 TKL RGB" href={KB} store="Walmart" acquired />
-          <Gift id="gift-mouse" label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href={MOUSE} store="Amazon" price="$30" />
-          <Gift id="gift-monitor" label="Monitor" name="Recommended option" href={MON} store="Amazon" />
-          <Gift label="Monitor" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." />
-        </div>
-      </section>
-
-      <section className="fade-up mt-20">
-        <h2 className="text-2xl font-bold sm:text-3xl">Want to help with something smaller?</h2>
-        <p className="mt-2 text-muted-foreground">
-          Tap an amount below — it opens the store where you can buy that gift card.
-        </p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {GIFTCARDS.map((c) => (
-            <div key={c.id} id={c.id} className="card-soft scroll-mt-6 p-6">
-              <h3 className="text-lg font-semibold">{c.name}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">Digital gift card · tap an amount to open its store page</p>
-              <div className="mt-5 grid gap-2" style={{ gridTemplateColumns: `repeat(${c.amounts.length}, minmax(0, 1fr))` }}>
-                {c.amounts.map((a) => (
-                  <a key={a.label + a.store} href={a.href} target="_blank" rel="noopener noreferrer" className="btn-ghost flex flex-col items-center gap-1 py-3 text-sm">
-                    <span className="text-base font-bold">{a.label}</span>
-                    <span className="text-xs font-normal text-muted-foreground">{a.store}</span>
-                  </a>
-                ))}
-              </div>
+          <section id="pc" className="card-soft fade-up-2 scroll-mt-24 p-6 sm:p-10" style={{ boxShadow: "var(--glow)" }}>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary">#1 Priority — the main goal</p>
+            <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
+              <h2 className="text-2xl font-bold sm:text-3xl">HZG M500 Gaming PC</h2>
+              <span className="text-3xl font-bold text-primary">$809</span>
             </div>
-          ))}
+            <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {["Ryzen 5 5600", "RX 6600 8GB", "16GB RAM", "1TB SSD", "Windows 11", "Wi‑Fi 6"].map((s) => (
+                <li key={s} className="rounded-lg border border-border bg-secondary px-4 py-3 text-sm font-medium">{s}</li>
+              ))}
+            </ul>
+            <a href={NEWEGG} target="_blank" rel="noopener noreferrer" className="btn-primary mt-8 w-full px-6 py-4 text-lg">
+              View & Buy on Newegg →
+            </a>
+            <p className="mt-4 text-sm text-muted-foreground">
+              This is the one I need most. It will let me record and stream cleanly so I can start earning and pay people back.
+            </p>
+            <div className="mt-6 rounded-xl border border-border bg-secondary p-4 text-sm leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-foreground">Real talk: </span>
+              one person isn’t going to buy this for me. This is meant to be pooled — a few people putting their money
+              together to get it. Everyone who is part of pooling gets money back over time, even before I’m fully monetized.
+            </div>
+          </section>
         </div>
-      </section>
 
-      <footer className="mt-24 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-        Thank you for reading — every bit of help counts.
-      </footer>
-    </main>
+        <div id="setup" className="scroll-mt-20"><Diagram /></div>
+
+        <section className="fade-up mt-24">
+          <div className="flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
+            <h2 className="text-2xl font-bold sm:text-3xl">Too expensive? Cheaper gift options</h2>
+            <span className="text-sm text-muted-foreground">Peripherals</span>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <Gift id="gift-keyboard" label="Keyboard" name="SteelSeries Apex 3 TKL RGB" href={KB} store="Walmart" acquired />
+            <Gift id="gift-mouse" label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href={MOUSE} store="Amazon" price="$30" />
+            <Gift id="gift-monitor" label="Monitor" name="Recommended option" href={MON} store="Amazon" />
+            <Gift label="Monitor" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." />
+          </div>
+        </section>
+
+        <section id="gifts" className="fade-up mt-24 scroll-mt-20">
+          <Warn strong>
+            <p className="font-semibold text-foreground">Before you scroll further — the PC is what really matters.</p>
+            <p className="mt-1">Gift cards are appreciated, but they don’t help me make better videos. If you can, put money toward the <a href="#pc" className="underline underline-offset-2 text-foreground">PC pool</a> instead.</p>
+          </Warn>
+          <div className="mt-10 flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
+            <h2 className="text-2xl font-bold sm:text-3xl">Want to help with something smaller?</h2>
+            <span className="text-sm text-muted-foreground">Gift cards</span>
+          </div>
+          <div className="mt-6"><Warn>Heads up: without the PC, nothing else on this page gets me monetized. Even $10 toward the PC goes further than a gift card.</Warn></div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {GIFTCARDS.map((c) => (
+              <div key={c.id} id={c.id} className="card-soft scroll-mt-24 p-6">
+                <h3 className="text-lg font-semibold">{c.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">Digital gift card · tap an amount to open its store page</p>
+                <div className="mt-5 grid gap-2" style={{ gridTemplateColumns: `repeat(${c.amounts.length}, minmax(0, 1fr))` }}>
+                  {c.amounts.map((a) => (
+                    <a key={a.label + a.store} href={a.href} target="_blank" rel="noopener noreferrer" className="btn-ghost flex flex-col items-center gap-1 py-3 text-sm">
+                      <span className="text-base font-bold">{a.label}</span>
+                      <span className="text-xs font-normal text-muted-foreground">{a.store}</span>
+                    </a>
+                  ))}
+                </div>
+                <p className="mt-4 text-xs text-muted-foreground">⚠ Reminder: the PC is the #1 priority.</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8"><Warn strong>
+            <p className="font-semibold text-foreground">Last reminder: the PC is the whole point.</p>
+            <p className="mt-1">Everyone who helps pool toward it gets money back over time. <a href="#pc" className="underline underline-offset-2 text-foreground">Go back to the PC ↑</a></p>
+          </Warn></div>
+        </section>
+
+        <footer className="mt-24 border-t border-border pt-8 text-center text-sm text-muted-foreground">
+          Thank you for reading — every bit of help counts.
+        </footer>
+      </main>
+    </>
   );
 }
 
