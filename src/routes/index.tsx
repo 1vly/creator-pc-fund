@@ -64,15 +64,15 @@ const GIFTCARDS: { id: string; name: string; store: string; href: string; amount
 function Index() {
   return (
     <main className="mx-auto max-w-5xl px-5 py-16 sm:py-24">
-      <section className="fade-up max-w-3xl">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">Let’s get to the point.</h1>
-        <p className="mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+      <section className="max-w-3xl">
+        <h1 className="fade-up text-4xl font-bold tracking-tight sm:text-6xl">Let’s get to the point.</h1>
+        <p className="fade-up-1 mt-6 text-lg leading-relaxed text-muted-foreground sm:text-xl">
           I need a better PC so I can make better videos for YouTube and finally get monetized. Anyone who helps
           pool money toward this PC will receive money back over time — even before I get fully monetized.
         </p>
       </section>
 
-      <section id="pc" className="card-soft fade-up mt-14 p-6 sm:p-10">
+      <section id="pc" className="card-soft fade-up-2 mt-14 p-6 sm:p-10">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary">Primary goal</p>
         <div className="mt-3 flex flex-wrap items-baseline justify-between gap-3">
           <h2 className="text-2xl font-bold sm:text-3xl">HZG M500 Gaming PC</h2>
@@ -93,7 +93,7 @@ function Index() {
 
       <Diagram />
 
-      <section className="mt-20">
+      <section className="fade-up mt-20">
         <h2 className="text-2xl font-bold sm:text-3xl">Too expensive? Here are some cheaper gift options</h2>
         <p className="mt-2 text-muted-foreground">Every button opens that item’s real store page in a new tab.</p>
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -104,7 +104,7 @@ function Index() {
         </div>
       </section>
 
-      <section className="mt-20">
+      <section className="fade-up mt-20">
         <h2 className="text-2xl font-bold sm:text-3xl">Want to help with something smaller?</h2>
         <p className="mt-2 text-muted-foreground">
           Tap an amount below — it opens the store where you can buy that gift card.
@@ -122,10 +122,6 @@ function Index() {
                   </a>
                 ))}
               </div>
-              <a href={c.href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-5 w-full px-4 py-3 text-sm">
-                Buy on {c.store} →
-              </a>
-              <p className="mt-3 text-xs text-muted-foreground">Opens {c.store} in a new tab.</p>
             </div>
           ))}
         </div>
@@ -141,14 +137,15 @@ function Index() {
 function Gift({ id, label, name, href, store, note, price }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string }) {
   return (
     <div id={id} className="card-soft flex scroll-mt-6 flex-col p-6">
-      <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
-      <h3 className="mt-2 text-lg font-semibold">{name}</h3>
-      {price && <p className="mt-2 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{price}</span></p>}
-      {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
-      <a href={href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-5 px-4 py-3 text-sm">
+      <div className="mb-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
+        <h3 className="mt-2 text-lg font-semibold">{name}</h3>
+        {price && <p className="mt-2 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{price}</span></p>}
+        {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
+      </div>
+      <a href={href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-auto px-4 py-3 text-sm">
         Buy on {store} →
       </a>
-      <p className="mt-3 text-xs text-muted-foreground">Opens {store} in a new tab.</p>
     </div>
   );
 }
@@ -163,7 +160,7 @@ function Diagram() {
     className: "part",
   });
   return (
-    <section className="mt-20">
+    <section className="fade-up mt-20">
       <h2 className="text-2xl font-bold sm:text-3xl">The full setup</h2>
       <p className="mt-2 text-muted-foreground">Hover or tap any item to see details.</p>
       <div className="mt-8 grid items-center gap-6 md:grid-cols-[1fr_320px]">
