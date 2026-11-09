@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { useState } from "react";
 import type React from "react";
 
@@ -114,6 +115,17 @@ function Index() {
                 <li key={s} className="rounded-lg border border-border bg-secondary px-4 py-3 text-sm font-medium">{s}</li>
               ))}
             </ul>
+            <div className="mt-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Split it up</p>
+              <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                {[[4, "$203"], [8, "$102"], [16, "$51"]].map(([n, amt]) => (
+                  <div key={n} className="rounded-lg border border-border bg-secondary px-2 py-3">
+                    <div className="text-lg font-bold">{amt}</div>
+                    <div className="text-xs text-muted-foreground">each × {n} people</div>
+                  </div>
+                ))}
+              </div>
+            </div>
             <a href={NEWEGG} target="_blank" rel="noopener noreferrer" className="btn-primary mt-8 w-full px-6 py-4 text-lg">
               View & Buy on Newegg →
             </a>
@@ -129,6 +141,11 @@ function Index() {
         </div>
 
         <div id="setup" className="scroll-mt-20"><Diagram /></div>
+
+        <div className="fade-up mt-20 border-y border-border py-10 text-center">
+          <p className="font-display text-2xl font-bold tracking-tight sm:text-3xl">The PC alone gets me monetized.</p>
+          <p className="mt-2 text-muted-foreground">Everything below is nice-to-have.</p>
+        </div>
 
         <section className="fade-up mt-24">
           <div className="flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
@@ -176,6 +193,7 @@ function Index() {
           </Warn></div>
         </section>
 
+        <PinnedReminder />
         <footer className="mt-24 border-t border-border pt-8 text-center text-sm text-muted-foreground">
           Thank you for reading — every bit of help counts.
         </footer>
@@ -254,5 +272,30 @@ function Diagram() {
         </div>
       </div>
     </section>
+  );
+}
+
+function PinnedReminder() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const el = document.getElementById("setup");
+      if (!el) return;
+      setShow(el.getBoundingClientRect().bottom < 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  return (
+    <div
+      aria-hidden={!show}
+      className={`fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/90 backdrop-blur transition-all duration-500 ${show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"}`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3 text-sm">
+        <span className="text-muted-foreground">Still scrolling? <span className="font-semibold text-foreground">The PC is the goal.</span></span>
+        <a href="#pc" className="btn-primary shrink-0 px-3 py-1.5 text-xs">Chip in ↑</a>
+      </div>
+    </div>
   );
 }
