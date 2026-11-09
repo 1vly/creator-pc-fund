@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useState } from "react";
 import type React from "react";
 
 const NEWEGG =
