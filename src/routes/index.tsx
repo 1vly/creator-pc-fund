@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type React from "react";
+import { ArrowUp, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { POOLING_EXAMPLES } from "@/lib/pc-pooling";
 
 const NEWEGG =
   "https://www.newegg.com/hzg-gaming-desktop-pcs-amd-radeon-graphics-amd-ryzen-5-5600-16gb-ddr4-1tb-nvme-ssd-m50/p/3D5-006P-00028";
@@ -72,6 +75,30 @@ function Warn({ children, strong }: { children: React.ReactNode; strong?: boolea
 }
 
 function Index() {
+  const peripheralsEnd = useRef<HTMLDivElement>(null);
+  const [showReminder, setShowReminder] = useState(false);
+
+  useEffect(() => {
+    const marker = peripheralsEnd.current;
+    if (!marker) return;
+    let frame = 0;
+    const update = () => {
+      setShowReminder(marker.getBoundingClientRect().top < 64);
+      frame = 0;
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <>
       <header className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur">
@@ -84,7 +111,7 @@ function Index() {
           </div>
         </nav>
       </header>
-      <main className="mx-auto max-w-6xl px-5 pt-10 pb-16 sm:pt-16 sm:pb-24">
+      <main className="mx-auto max-w-6xl px-5 pt-10 pb-32 sm:pt-16 sm:pb-36">
         <div className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-12">
           <section className="lg:sticky lg:top-24">
             <p className="fade-up text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">YouTube PC Fund</p>
@@ -125,6 +152,19 @@ function Index() {
               one person isn’t going to buy this for me. This is meant to be pooled — a few people putting their money
               together to get it. Everyone who is part of pooling gets money back over time, even before I’m fully monetized.
             </div>
+            <div className="mt-8 border-t border-border pt-6">
+              <h3 className="flex items-center gap-2 text-base font-semibold"><Users className="size-4" aria-hidden="true" />One goal. Shared together.</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">The $809 goal gets smaller when more people chip in.</p>
+              <div className="mt-4 divide-y divide-border">
+                {POOLING_EXAMPLES.map(({ people, amount }) => (
+                  <a key={people} href={NEWEGG} target="_blank" rel="noopener noreferrer" aria-label={`${people} people at $${amount.toFixed(2)} each — view the PC on Newegg`} className="group flex items-center justify-between gap-3 py-3 text-sm transition-colors hover:text-primary">
+                    <span className="text-muted-foreground">{people} people</span>
+                    <span><strong className="text-lg font-semibold">${amount.toFixed(2)}</strong><span className="ml-1 text-muted-foreground">each</span><span className="ml-3" aria-hidden="true">↗</span></span>
+                  </a>
+                ))}
+              </div>
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">Examples only, not money already raised. Shares are rounded up to the nearest cent; any amount toward the PC helps.</p>
+            </div>
           </section>
         </div>
 
@@ -143,7 +183,16 @@ function Index() {
           </div>
         </section>
 
+        <div ref={peripheralsEnd} className="h-px" aria-hidden="true" />
+
         <section id="gifts" className="fade-up mt-24 scroll-mt-20">
+          <div className="mb-10 border-y border-border py-8 sm:py-10">
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">The goal hasn’t changed</p>
+            <h2 className="mt-3 text-2xl font-bold sm:text-3xl">The PC makes better videos possible.</h2>
+            <p className="mt-2 text-lg text-muted-foreground">Everything below is nice-to-have.</p>
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">A gift card is a thoughtful extra, but it doesn’t replace the PC I need to record, stream, and work toward monetization.</p>
+            <Button asChild variant="link" className="mt-4 h-auto px-0"><a href="#pc">Put the PC first <ArrowUp aria-hidden="true" /></a></Button>
+          </div>
           <Warn strong>
             <p className="font-semibold text-foreground">Before you scroll further — the PC is what really matters.</p>
             <p className="mt-1">Gift cards are appreciated, but they don’t help me make better videos. If you can, put money toward the <a href="#pc" className="underline underline-offset-2 text-foreground">PC pool</a> instead.</p>
@@ -180,6 +229,17 @@ function Index() {
           Thank you for reading — every bit of help counts.
         </footer>
       </main>
+      {showReminder && (
+        <aside aria-label="PC goal reminder" className="pc-reminder fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur-xl">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-semibold">Still scrolling? The PC is the goal.</p>
+              <p className="mt-1 text-xs text-muted-foreground">$809, pooled together. Extras can wait.</p>
+            </div>
+            <Button asChild className="shrink-0"><a href="#pc">Back to PC <ArrowUp aria-hidden="true" /></a></Button>
+          </div>
+        </aside>
+      )}
     </>
   );
 }
@@ -206,7 +266,8 @@ function Gift({ id, label, name, href, store, note, price, acquired }: { id?: st
 
 function Diagram() {
   const [active, setActive] = useState<string>("pc");
-  const part = PARTS.find((p) => p.id === active)!;
+  const part = PARTS.find((p) => p.id === active);
+  if (!part) return null;
   const bind = (id: string, acquired = false) => ({
     "data-active": active === id,
     "data-acquired": acquired || undefined,
