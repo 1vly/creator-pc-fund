@@ -10,4 +10,5 @@
 <!-- LOVABLE:END -->
 
 - Keep PC pooling calculations in a browser-safe utility with tests; examples must cover the full goal after rounding to cents.
-- Show the lower-page PC reminder only after the peripherals end marker passes the header; track scrolling with a frame-throttled passive listener and cleanup so anchor jumps also work.
+- Show the PC reminder once the marker right after the PC card passes the header; track scrolling with a frame-throttled passive listener and cleanup so anchor jumps also work.
+- PC Q&A AI runs in a streaming server route (/api/ask-pc) with prompt and key server-side; it returns plain text with a NUL-prefixed error tail so the client can show safe errors.

@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type React from "react";
-import { ArrowUp, Users, X } from "lucide-react";
+import { ArrowUp, Users, X, MessageCircleQuestion, Send, Square } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { POOLING_EXAMPLES } from "@/lib/pc-pooling";
 
@@ -75,12 +76,12 @@ function Warn({ children, strong }: { children: React.ReactNode; strong?: boolea
 }
 
 function Index() {
-  const peripheralsEnd = useRef<HTMLDivElement>(null);
+  const pcEnd = useRef<HTMLDivElement>(null);
   const [showReminder, setShowReminder] = useState(false);
   const [reminderDismissed, setReminderDismissed] = useState(false);
 
   useEffect(() => {
-    const marker = peripheralsEnd.current;
+    const marker = pcEnd.current;
     if (!marker) return;
     let frame = 0;
     const update = () => {
@@ -106,7 +107,9 @@ function Index() {
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 text-sm">
           <span className="font-display font-bold tracking-tight">PC Fund</span>
           <div className="flex items-center gap-4 text-muted-foreground">
-            <a href="#setup" className="hidden hover:text-foreground sm:inline">Setup</a>
+            <a href="#payback" className="hidden hover:text-foreground sm:inline">Payback</a>
+            <a href="#ask" className="hidden hover:text-foreground sm:inline">Ask</a>
+            <a href="#setup" className="hidden hover:text-foreground md:inline">Setup</a>
             <a href="#gifts" className="hidden hover:text-foreground sm:inline">Gifts</a>
             <a href="#pc" className="btn-primary px-3 py-1.5 text-xs">Fund the PC</a>
           </div>
@@ -169,6 +172,12 @@ function Index() {
           </section>
         </div>
 
+        <div ref={pcEnd} className="h-px" aria-hidden="true" />
+
+        <Payback />
+
+        <AskPc />
+
         <div id="setup" className="scroll-mt-20"><Diagram /></div>
 
         <section className="fade-up mt-24">
@@ -183,8 +192,6 @@ function Index() {
             <Gift label="Monitor" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." />
           </div>
         </section>
-
-        <div ref={peripheralsEnd} className="h-px" aria-hidden="true" />
 
         <section id="gifts" className="fade-up mt-24 scroll-mt-20">
           <div className="mb-10 border-y border-border py-8 sm:py-10">
@@ -245,9 +252,9 @@ function Index() {
             <X className="size-4" aria-hidden="true" />
           </button>
           <p className="text-xs font-semibold uppercase tracking-widest text-primary">#1 Priority</p>
-          <p className="mt-2 text-lg font-bold">Still scrolling? The PC is the goal.</p>
+          <p className="mt-2 text-lg font-bold">Don’t forget — the PC is the goal.</p>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            $809, pooled together — everyone who chips in gets money back over time. The extras below can wait.
+            $809, pooled together — everyone who chips in gets money back over time. Everything else can wait.
           </p>
           <Button asChild className="mt-4 w-full">
             <a href="#pc">Back to the PC <ArrowUp aria-hidden="true" /></a>
@@ -327,6 +334,106 @@ function Diagram() {
           )}
           {!part.acquired && <a href={part.anchor} className="btn-ghost mt-2 w-full px-4 py-2 text-sm">Jump to card ↓</a>}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; sub?: string }) {
+  return (
+    <div className="max-w-2xl">
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">{eyebrow}</p>
+      <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">{title}</h2>
+      {sub && <p className="mt-3 leading-relaxed text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
+
+const PAYBACK_STEPS = [
+  { t: "You chip in", d: "Put any amount toward the $809 PC. I keep a record of who pooled and how much." },
+  { t: "I start creating", d: "The PC lets me record, stream, and edit better videos consistently." },
+  { t: "Paybacks start early", d: "I begin paying people back in small amounts over time — even before I’m fully monetized." },
+  { t: "It grows with the channel", d: "As the channel earns more, paybacks get bigger and faster until everyone is covered." },
+];
+
+function Payback() {
+  return (
+    <section id="payback" className="fade-up mt-24 scroll-mt-24">
+      <SectionHead eyebrow="How you get paid back" title="Helping with the PC isn’t just a gift." sub="It’s a shared bet on the channel. The PC is what makes the videos — and the videos are what pay everyone back." />
+      <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {PAYBACK_STEPS.map((s, i) => (
+          <li key={s.t} className="card-soft p-6">
+            <span className="text-sm font-semibold text-muted-foreground">0{i + 1}</span>
+            <h3 className="mt-3 font-semibold">{s.t}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.d}</p>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-4 text-xs text-muted-foreground">Gift cards and peripherals are appreciated, but only money toward the PC is part of the payback pool.</p>
+    </section>
+  );
+}
+
+const SUGGESTED = ["Is the RX 6600 good for recording?", "Why does 16GB RAM matter for editing?", "Can this PC stream and record at once?"];
+
+function AskPc() {
+  const [q, setQ] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const ctrl = useRef<AbortController | null>(null);
+
+  async function ask(question: string) {
+    if (!question.trim() || busy) return;
+    setBusy(true); setAnswer(""); setError("");
+    const ac = new AbortController(); ctrl.current = ac;
+    try {
+      const res = await fetch("/api/ask-pc", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question }), signal: ac.signal });
+      if (!res.ok || !res.body) {
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(j.error ?? "Something went wrong."); return;
+      }
+      const reader = res.body.getReader(); const dec = new TextDecoder(); let text = "";
+      for (;;) {
+        const { done, value } = await reader.read(); if (done) break;
+        text += dec.decode(value, { stream: true });
+        const i = text.indexOf("\u0000");
+        if (i >= 0) { setAnswer(text.slice(0, i)); setError(text.slice(i + 1)); } else setAnswer(text);
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") setError("Couldn’t reach the helper. Try again.");
+    } finally { setBusy(false); ctrl.current = null; }
+  }
+
+  return (
+    <section id="ask" className="fade-up mt-24 scroll-mt-24">
+      <SectionHead eyebrow="Ask about the build" title="Curious what the parts actually do?" sub="Ask anything about the PC and setup — the AI helper explains how each part helps make better videos." />
+      <div className="card-soft mt-8 p-5 sm:p-8">
+        <div className="flex flex-wrap gap-2">
+          {SUGGESTED.map((s) => (
+            <button key={s} type="button" disabled={busy} onClick={() => { setQ(s); ask(s); }} className="btn-ghost px-3 py-1.5 text-xs">{s}</button>
+          ))}
+        </div>
+        <form className="mt-4 flex items-end gap-2" onSubmit={(e) => { e.preventDefault(); ask(q); }}>
+          <Textarea value={q} onChange={(e) => setQ(e.target.value)} maxLength={500} rows={2} placeholder="e.g. Will this handle 1080p editing?" aria-label="Your question about the PC"
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask(q); } }} className="min-h-12 resize-none" />
+          {busy ? (
+            <Button type="button" size="icon" variant="secondary" aria-label="Stop" onClick={() => ctrl.current?.abort()}><Square /></Button>
+          ) : (
+            <Button type="submit" size="icon" aria-label="Ask" disabled={!q.trim()}><Send /></Button>
+          )}
+        </form>
+        {(answer || busy || error) && (
+          <div className="mt-6 flex gap-3 border-t border-border pt-6" aria-live="polite">
+            <MessageCircleQuestion className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <div className="min-w-0 text-sm leading-relaxed">
+              {answer && <p className="whitespace-pre-wrap">{answer}</p>}
+              {busy && !answer && <p className="animate-pulse text-muted-foreground">Thinking about your question…</p>}
+              {error && <p className="mt-2 text-destructive">{error}</p>}
+            </div>
+          </div>
+        )}
+        <p className="mt-5 text-xs text-muted-foreground">AI answers can be wrong — check the store page for exact specs.</p>
       </div>
     </section>
   );
