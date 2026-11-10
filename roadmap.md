@@ -4,7 +4,7 @@
 - [x] Add a clear PC-versus-extras comparison above the gift cards.
 - [x] Verify desktop/mobile, pooling calculations, and return-to-PC flow.
 # AI parts Q&A + polish
-- [ ] Ask-about-the-PC AI feature (AI Gateway, streaming).
-- [ ] Explain how pooling payback works.
-- [ ] Show PC reminder sooner (once the PC card scrolls away).
-- [ ] Cleaner visuals across the page.
+- [x] Ask-about-the-PC AI feature (AI Gateway, streaming).
+- [x] Explain how pooling payback works.
+- [x] Show PC reminder sooner (once the PC card scrolls away).
+- [x] Cleaner visuals across the page.

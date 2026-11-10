@@ -10,7 +10,7 @@ The build:
 People who pool money toward the PC get paid back over time, even before the creator is fully monetized. Never promise specific amounts, dates, or interest. If asked something unrelated, gently steer back to the PC. Don't invent specs beyond those listed.`;
 
 export async function handleAskPc(request: Request) {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env['LOVABLE_API_KEY'];
   if (!apiKey) return Response.json({ error: "AI is not configured." }, { status: 500 });
   let question = "";
   try {
