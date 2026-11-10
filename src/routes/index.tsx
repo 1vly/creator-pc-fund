@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type React from "react";
-import { ArrowUp, Users } from "lucide-react";
+import { ArrowUp, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { POOLING_EXAMPLES } from "@/lib/pc-pooling";
 
@@ -77,6 +77,7 @@ function Warn({ children, strong }: { children: React.ReactNode; strong?: boolea
 function Index() {
   const peripheralsEnd = useRef<HTMLDivElement>(null);
   const [showReminder, setShowReminder] = useState(false);
+  const [reminderDismissed, setReminderDismissed] = useState(false);
 
   useEffect(() => {
     const marker = peripheralsEnd.current;
@@ -229,15 +230,28 @@ function Index() {
           Thank you for reading — every bit of help counts.
         </footer>
       </main>
-      {showReminder && (
-        <aside aria-label="PC goal reminder" className="pc-reminder fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur-xl">
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold">Still scrolling? The PC is the goal.</p>
-              <p className="mt-1 text-xs text-muted-foreground">$809, pooled together. Extras can wait.</p>
-            </div>
-            <Button asChild className="shrink-0"><a href="#pc">Back to PC <ArrowUp aria-hidden="true" /></a></Button>
-          </div>
+      {showReminder && !reminderDismissed && (
+        <aside
+          aria-label="PC goal reminder"
+          className="pc-reminder fixed inset-x-4 bottom-4 z-30 mx-auto max-w-md rounded-2xl border border-border bg-card/95 p-5 backdrop-blur-xl sm:inset-x-6 sm:bottom-6"
+          style={{ boxShadow: "var(--glow), 0 24px 60px -20px rgb(0 0 0 / 60%)" }}
+        >
+          <button
+            type="button"
+            onClick={() => setReminderDismissed(true)}
+            aria-label="Dismiss reminder"
+            className="absolute top-3 right-3 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+          <p className="text-xs font-semibold uppercase tracking-widest text-primary">#1 Priority</p>
+          <p className="mt-2 text-lg font-bold">Still scrolling? The PC is the goal.</p>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+            $809, pooled together — everyone who chips in gets money back over time. The extras below can wait.
+          </p>
+          <Button asChild className="mt-4 w-full">
+            <a href="#pc">Back to the PC <ArrowUp aria-hidden="true" /></a>
+          </Button>
         </aside>
       )}
     </>
