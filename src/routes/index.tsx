@@ -454,7 +454,7 @@ const GOALS = ["Whatever helps most", "The PC", "The monitor", "Something small"
 
 function BudgetHelper() {
   const [budget, setBudget] = useState("30");
-  const [goal, setGoal] = useState(GOALS[0]);
+  const [goal, setGoal] = useState<string>(GOALS[0] ?? "Whatever helps most");
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
