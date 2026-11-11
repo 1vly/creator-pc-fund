@@ -1,6 +1,10 @@
-import { createOpenAI } from "@ai-sdk/openai";
-import { streamText } from "ai";
-import { createLovableAiGatewayRunIdFetch, getLovableAiGatewayRunId, withLovableAiGatewayRunIdHeader } from "./run-id";
+import { streamPlainAnswer } from "./stream-plain.server";
+
+export const SETUP_FACTS = `The build:
+- HZG M500 Gaming PC, $809 on Newegg (Ryzen 5 5600, RX 6600 8GB, 16GB RAM, 1TB SSD). #1 goal, pooled by several people; poolers get paid back over time.
+- Monitor (highly needed, ~$100–$200 on Amazon; a recommended option and a cheaper one that is harder on the creator's eyes).
+- Smaller extras: Logitech LIGHTSPEED wireless mouse, $30. Keyboard already acquired.
+- Gift cards: Discord ($25 Walmart, $50 Target), Roblox ($30/$50/$100) — appreciated but do not help make videos and are not part of the payback pool.`;
 
 const SYSTEM = `You are the friendly helper on a small YouTube creator's "PC Fund" page.
 Visitors ask about the setup the creator is pooling money for. Explain in plain, short, honest language (max ~150 words, no tables) how each part helps record, stream, and edit YouTube videos.
@@ -21,48 +25,5 @@ export async function handleAskPc(request: Request) {
     return Response.json({ error: "Please ask a question under 500 characters." }, { status: 400 });
   }
 
-  const runIdFetch = createLovableAiGatewayRunIdFetch(getLovableAiGatewayRunId(request));
-  const provider = createOpenAI({
-    baseURL: "https://ai.gateway.lovable.dev/v1",
-    apiKey,
-    headers: { "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
-    fetch: runIdFetch.fetch,
-  });
-  const result = streamText({
-    model: provider.responses("openai/gpt-6-astra"),
-    messages: [
-      { role: "system", content: SYSTEM },
-      { role: "user", content: question },
-    ],
-    abortSignal: request.signal,
-    maxRetries: 0,
-    providerOptions: {
-      openai: { forceReasoning: true, reasoningEffort: "low", reasoningSummary: "auto", store: false, include: ["reasoning.encrypted_content"] },
-    },
-  });
-
-  const enc = new TextEncoder();
-  const body = new ReadableStream<Uint8Array>({
-    async start(controller) {
-      try {
-        for await (const part of result.fullStream) {
-          if (part.type === "text-delta") controller.enqueue(enc.encode(part.text));
-          else if (part.type === "error") throw part.error;
-        }
-      } catch (error) {
-        const e = error as { statusCode?: number };
-        const msg =
-          e?.statusCode === 429 ? "Lots of questions right now — try again in a minute."
-          : e?.statusCode === 402 || e?.statusCode === 403 ? "The AI helper is unavailable right now."
-          : "Something went wrong answering that.";
-        if (!request.signal.aborted) controller.enqueue(enc.encode(`\u0000${msg}`));
-        console.error("ask-pc error", error);
-      }
-      controller.close();
-    },
-  });
-  return withLovableAiGatewayRunIdHeader(
-    new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache, no-transform" } }),
-    runIdFetch,
-  );
+  return streamPlainAnswer(request, apiKey, SYSTEM, question, "ask-pc");
 }

@@ -176,6 +176,7 @@ function Index() {
 
         <Payback />
 
+        <BudgetHelper />
         <AskPc />
 
         <div id="setup" className="scroll-mt-20"><Diagram /></div>
@@ -440,6 +441,88 @@ function AskPc() {
         )}
         <p className="mt-5 text-xs text-muted-foreground">AI answers can be wrong — check the store page for exact specs.</p>
       </div>
+    </section>
+  );
+}
+
+function Bolded({ text }: { text: string }) {
+  return <>{text.split("**").map((t, i) => (i % 2 ? <strong key={i} className="font-semibold text-foreground">{t}</strong> : <span key={i}>{t}</span>))}</>;
+}
+
+const BUDGETS = [10, 30, 50, 100];
+const GOALS = ["Whatever helps most", "The PC", "The monitor", "Something small"];
+
+function BudgetHelper() {
+  const [budget, setBudget] = useState("30");
+  const [goal, setGoal] = useState(GOALS[0]);
+  const [answer, setAnswer] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const ctrl = useRef<AbortController | null>(null);
+
+  async function run() {
+    const n = Number(budget);
+    if (!Number.isFinite(n) || n < 1 || n > 5000) { setError("Enter a budget between $1 and $5,000."); return; }
+    if (busy) return;
+    setBusy(true); setAnswer(""); setError("");
+    const ac = new AbortController(); ctrl.current = ac;
+    try {
+      const res = await fetch("/api/recommend", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ budget: n, goal: goal.slice(0, 300) }), signal: ac.signal });
+      if (!res.ok || !res.body) {
+        const j = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(j.error ?? "Something went wrong."); return;
+      }
+      const reader = res.body.getReader(); const dec = new TextDecoder(); let text = "";
+      for (;;) {
+        const { done, value } = await reader.read(); if (done) break;
+        text += dec.decode(value, { stream: true });
+        const i = text.indexOf("\u0000");
+        if (i >= 0) { setAnswer(text.slice(0, i)); setError(text.slice(i + 1)); } else setAnswer(text);
+      }
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") setError("Couldn’t reach the helper. Try again.");
+    } finally { setBusy(false); ctrl.current = null; }
+  }
+
+  return (
+    <section id="match" className="fade-up mt-24 scroll-mt-24">
+      <SectionHead eyebrow="Find your best fit" title="What can you put in?" sub="Share your budget and what you'd like to support — the AI helper picks the most useful option for you." />
+      <form className="card-soft mt-8 p-5 sm:p-8" onSubmit={(e) => { e.preventDefault(); run(); }}>
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Your budget</p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {BUDGETS.map((b) => (
+            <button key={b} type="button" onClick={() => setBudget(String(b))} aria-pressed={budget === String(b)}
+              className={`btn-ghost px-4 py-2 text-sm ${budget === String(b) ? "border-primary bg-accent" : ""}`}>${b}</button>
+          ))}
+          <label className="flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm focus-within:border-primary">
+            <span className="text-muted-foreground">$</span>
+            <input type="number" min={1} max={5000} inputMode="decimal" value={budget} onChange={(e) => setBudget(e.target.value)} aria-label="Custom budget in dollars" className="w-20 bg-transparent outline-none" />
+          </label>
+        </div>
+        <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-muted-foreground">I'd like to support</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {GOALS.map((g) => (
+            <button key={g} type="button" onClick={() => setGoal(g)} aria-pressed={goal === g}
+              className={`btn-ghost px-4 py-2 text-sm ${goal === g ? "border-primary bg-accent" : ""}`}>{g}</button>
+          ))}
+        </div>
+        <div className="mt-6 flex gap-2">
+          {busy ? (
+            <Button type="button" variant="secondary" onClick={() => ctrl.current?.abort()}><Square /> Stop</Button>
+          ) : (
+            <Button type="submit">Get my recommendation</Button>
+          )}
+        </div>
+        {(answer || busy || error) && (
+          <div className="mt-6 border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground" aria-live="polite">
+            {answer && <p className="whitespace-pre-wrap"><Bolded text={answer} /></p>}
+            {busy && !answer && <p className="animate-pulse">Finding the best fit…</p>}
+            {error && <p className="mt-2 text-destructive">{error}</p>}
+            {answer && !busy && <a href="#pc" className="btn-ghost mt-4 px-4 py-2 text-sm">See the PC ↑</a>}
+          </div>
+        )}
+        <p className="mt-5 text-xs text-muted-foreground">Suggestions only — AI can be wrong. Only money toward the PC counts for payback.</p>
+      </form>
     </section>
   );
 }
