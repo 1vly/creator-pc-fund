@@ -182,14 +182,20 @@ function Index() {
 
         <section className="fade-up mt-24">
           <div className="flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
-            <h2 className="text-2xl font-bold sm:text-3xl">Too expensive? Cheaper gift options</h2>
-            <span className="text-sm text-muted-foreground">Peripherals</span>
+            <h2 className="text-2xl font-bold sm:text-3xl">Highly needed</h2>
+            <span className="text-sm text-muted-foreground">After the PC, this matters most</span>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <Gift id="gift-keyboard" label="Keyboard" name="SteelSeries Apex 3 TKL RGB" href={KB} store="Walmart" acquired />
+            <Gift id="gift-monitor" label="Monitor · Highly needed" name="Recommended option" href={MON} store="Amazon" needed />
+            <Gift label="Monitor · Highly needed" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." needed />
+          </div>
+          <div className="mt-14 flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
+            <h2 className="text-xl font-bold sm:text-2xl">Smaller extras</h2>
+            <span className="text-sm text-muted-foreground">Peripherals</span>
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <Gift id="gift-mouse" label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href={MOUSE} store="Amazon" price="$30" />
-            <Gift id="gift-monitor" label="Monitor" name="Recommended option" href={MON} store="Amazon" />
-            <Gift label="Monitor" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." />
+            <Gift id="gift-keyboard" label="Keyboard" name="SteelSeries Apex 3 TKL RGB" href={KB} store="Walmart" acquired />
           </div>
         </section>
 
@@ -223,8 +229,7 @@ function Index() {
                     </a>
                   ))}
                 </div>
-                <p className="mt-4 text-xs text-muted-foreground">⚠ Reminder: the PC is the #1 priority.</p>
-              </div>
+                              </div>
             ))}
           </div>
           <div className="mt-8"><Warn strong>
@@ -265,11 +270,11 @@ function Index() {
   );
 }
 
-function Gift({ id, label, name, href, store, note, price, acquired }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string; acquired?: boolean }) {
+function Gift({ id, label, name, href, store, note, price, acquired, needed }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string; acquired?: boolean; needed?: boolean }) {
   return (
-    <div id={id} className={`${acquired ? "card-done" : "card-soft"} flex scroll-mt-6 flex-col p-6`}>
+    <div id={id} className={`${acquired ? "card-done" : "card-soft"} flex scroll-mt-24 flex-col p-6 ${needed ? "border-primary/40" : ""}`} style={needed ? { boxShadow: "0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent), 0 18px 40px -24px color-mix(in oklab, var(--primary) 40%, transparent)" } : undefined}>
       <div className="mb-5">
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
+        <p className={`text-xs font-semibold uppercase tracking-widest ${needed ? "text-primary" : "text-muted-foreground"}`}>{label}</p>
         <h3 className="mt-2 text-lg font-semibold">{name}</h3>
         {price && <p className="mt-2 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{price}</span></p>}
         {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
@@ -277,7 +282,7 @@ function Gift({ id, label, name, href, store, note, price, acquired }: { id?: st
       {acquired ? (
         <div className="mt-auto rounded-lg border border-border px-4 py-3 text-center text-sm font-semibold text-muted-foreground">Already acquired ✓</div>
       ) : (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="btn-primary mt-auto px-4 py-3 text-sm">
+        <a href={href} target="_blank" rel="noopener noreferrer" className={`${needed ? "btn-primary" : "btn-ghost"} mt-auto px-4 py-3 text-sm`}>
           Buy on {store} →
         </a>
       )}
