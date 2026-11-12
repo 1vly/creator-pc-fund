@@ -197,7 +197,7 @@ function Index() {
           <SectionHead eyebrow="Step 2 · Highly needed" title="The monitor" sub="After the PC, this matters most." />
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <Gift id="gift-monitor" label="Recommended" name="Recommended monitor" href={MON} store="Amazon" needed />
-            <Gift label="Budget pick" name="Cheaper monitor" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." needed />
+            <Gift label="Budget pick" name="Cheaper monitor" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." unavailable />
           </div>
         </section>
 
@@ -276,17 +276,23 @@ function Index() {
   );
 }
 
-function Gift({ id, label, name, href, store, note, price, acquired, needed }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string; acquired?: boolean; needed?: boolean }) {
+function Gift({ id, label, name, href, store, note, price, acquired, needed, unavailable }: { id?: string; label: string; name: string; href: string; store: string; note?: string; price?: string; acquired?: boolean; needed?: boolean; unavailable?: boolean }) {
+  const muted = acquired || unavailable;
   return (
-    <div id={id} className={`${acquired ? "card-done" : "card-soft"} flex scroll-mt-24 flex-col p-6 ${needed ? "border-primary/40" : ""}`} style={needed ? { boxShadow: "0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent), 0 18px 40px -24px color-mix(in oklab, var(--primary) 40%, transparent)" } : undefined}>
+    <div id={id} className={`${muted ? "card-done" : "card-soft"} flex scroll-mt-24 flex-col p-6 ${needed && !muted ? "border-primary/40" : ""}`} style={needed && !muted ? { boxShadow: "0 0 0 1px color-mix(in oklab, var(--primary) 18%, transparent), 0 18px 40px -24px color-mix(in oklab, var(--primary) 40%, transparent)" } : undefined}>
       <div className="mb-5">
-        <p className={`text-xs font-semibold uppercase tracking-widest ${needed ? "text-primary" : "text-muted-foreground"}`}>{label}</p>
+        <p className={`text-xs font-semibold uppercase tracking-widest ${needed && !muted ? "text-primary" : "text-muted-foreground"}`}>{label}</p>
         <h3 className="mt-2 text-lg font-semibold">{name}</h3>
         {price && <p className="mt-2 text-sm"><span className="text-muted-foreground">Price: </span><span className="font-semibold">{price}</span></p>}
         {note && <p className="mt-2 text-sm text-muted-foreground italic">{note}</p>}
       </div>
       {acquired ? (
         <div className="mt-auto rounded-lg border border-border px-4 py-3 text-center text-sm font-semibold text-muted-foreground">Already acquired ✓</div>
+      ) : unavailable ? (
+        <div className="mt-auto rounded-lg border border-border px-4 py-3 text-center">
+          <span className="block text-sm font-semibold text-muted-foreground">Currently unavailable</span>
+          <span className="mt-1 block text-xs font-normal text-muted-foreground">This one isn't sold at that link anymore.</span>
+        </div>
       ) : (
         <a href={href} target="_blank" rel="noopener noreferrer" className={`${needed ? "btn-primary" : "btn-ghost"} mt-auto px-4 py-3 text-sm`}>
           Buy on {store} →
