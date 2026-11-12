@@ -108,9 +108,9 @@ function Index() {
           <span className="font-display font-bold tracking-tight">PC Fund</span>
           <div className="flex items-center gap-4 text-muted-foreground">
             <a href="#payback" className="hidden hover:text-foreground sm:inline">Payback</a>
+            <a href="#needed" className="hidden hover:text-foreground sm:inline">Monitor</a>
             <a href="#ask" className="hidden hover:text-foreground sm:inline">Ask</a>
-            <a href="#setup" className="hidden hover:text-foreground md:inline">Setup</a>
-            <a href="#gifts" className="hidden hover:text-foreground sm:inline">Gifts</a>
+                        <a href="#gifts" className="hidden hover:text-foreground sm:inline">Gifts</a>
             <a href="#pc" className="btn-primary px-3 py-1.5 text-xs">Fund the PC</a>
           </div>
         </nav>
@@ -174,40 +174,46 @@ function Index() {
 
         <div ref={pcEnd} className="h-px" aria-hidden="true" />
 
+        <section aria-label="Ways to help" className="fade-up mt-12 grid gap-3 sm:grid-cols-3">
+          {[
+            { n: "1", t: "Chip in toward the PC", d: "$809 goal · gets you paid back", href: "#pc", primary: true },
+            { n: "2", t: "Get the monitor", d: "Highly needed · $100 – $200", href: "#needed" },
+            { n: "3", t: "Smaller extras", d: "Mouse $30 · gift cards", href: "#extras" },
+          ].map((o) => (
+            <a key={o.n} href={o.href} className={`card-soft group flex items-center gap-4 p-5 transition-transform hover:-translate-y-0.5 ${o.primary ? "border-primary/40" : ""}`} style={o.primary ? { boxShadow: "var(--glow)" } : undefined}>
+              <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${o.primary ? "bg-primary text-primary-foreground" : "border border-border"}`}>{o.n}</span>
+              <span className="min-w-0">
+                <span className="block font-semibold">{o.t}</span>
+                <span className="block text-xs text-muted-foreground">{o.d}</span>
+              </span>
+              <span aria-hidden="true" className="ml-auto text-muted-foreground transition-colors group-hover:text-foreground">→</span>
+            </a>
+          ))}
+        </section>
+
         <Payback />
 
-        <BudgetHelper />
-        <AskPc />
-
-        <div id="setup" className="scroll-mt-20"><Diagram /></div>
-
-        <section className="fade-up mt-24">
-          <div className="flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
-            <h2 className="text-2xl font-bold sm:text-3xl">Highly needed</h2>
-            <span className="text-sm text-muted-foreground">After the PC, this matters most</span>
-          </div>
+        <section id="needed" className="fade-up mt-24 scroll-mt-24">
+          <SectionHead eyebrow="Step 2 · Highly needed" title="The monitor" sub="After the PC, this matters most." />
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <Gift id="gift-monitor" label="Monitor · Highly needed" name="Recommended option" href={MON} store="Amazon" needed />
-            <Gift label="Monitor · Highly needed" name="Cheaper option" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." needed />
+            <Gift id="gift-monitor" label="Recommended" name="Recommended monitor" href={MON} store="Amazon" needed />
+            <Gift label="Budget pick" name="Cheaper monitor" href={MON_CHEAP} store="Amazon" note="It is cheaper, but not as easy on my eyes." needed />
           </div>
-          <div className="mt-14 flex flex-wrap items-end justify-between gap-2 border-b border-border pb-4">
-            <h2 className="text-xl font-bold sm:text-2xl">Smaller extras</h2>
-            <span className="text-sm text-muted-foreground">Peripherals</span>
-          </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        </section>
+
+        <section id="extras" className="fade-up mt-24 scroll-mt-24">
+          <SectionHead eyebrow="Step 3 · Smaller extras" title="Peripherals" />
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <Gift id="gift-mouse" label="Mouse" name="Logitech LIGHTSPEED Wireless Gaming Mouse" href={MOUSE} store="Amazon" price="$30" />
             <Gift id="gift-keyboard" label="Keyboard" name="SteelSeries Apex 3 TKL RGB" href={KB} store="Walmart" acquired />
           </div>
         </section>
 
+        <div id="setup" className="scroll-mt-20"><Diagram /></div>
+
+        <AskPc />
+
         <section id="gifts" className="fade-up mt-24 scroll-mt-20">
-          <div className="mb-10 border-y border-border py-8 sm:py-10">
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">The goal hasn’t changed</p>
-            <h2 className="mt-3 text-2xl font-bold sm:text-3xl">The PC makes better videos possible.</h2>
-            <p className="mt-2 text-lg text-muted-foreground">Everything below is nice-to-have.</p>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">A gift card is a thoughtful extra, but it doesn’t replace the PC I need to record, stream, and work toward monetization.</p>
-            <Button asChild variant="link" className="mt-4 h-auto px-0"><a href="#pc">Put the PC first <ArrowUp aria-hidden="true" /></a></Button>
-          </div>
           <Warn strong>
             <p className="font-semibold text-foreground">Before you scroll further — the PC is what really matters.</p>
             <p className="mt-1">Gift cards are appreciated, but they don’t help me make better videos. If you can, put money toward the <a href="#pc" className="underline underline-offset-2 text-foreground">PC pool</a> instead.</p>
@@ -216,7 +222,6 @@ function Index() {
             <h2 className="text-2xl font-bold sm:text-3xl">Want to help with something smaller?</h2>
             <span className="text-sm text-muted-foreground">Gift cards</span>
           </div>
-          <div className="mt-6"><Warn>Heads up: without the PC, nothing else on this page gets me monetized. Even $10 toward the PC goes further than a gift card.</Warn></div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {GIFTCARDS.map((c) => (
               <div key={c.id} id={c.id} className="card-soft scroll-mt-24 p-6">
@@ -452,6 +457,8 @@ function Bolded({ text }: { text: string }) {
 const BUDGETS = [10, 30, 50, 100];
 const GOALS = ["Whatever helps most", "The PC", "The monitor", "Something small"];
 
+// Temporarily hidden until the creator asks to bring it back.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function BudgetHelper() {
   const [budget, setBudget] = useState("30");
   const [goal, setGoal] = useState<string>(GOALS[0] ?? "Whatever helps most");
