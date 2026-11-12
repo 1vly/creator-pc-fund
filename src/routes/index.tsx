@@ -142,7 +142,7 @@ function Index() {
             </div>
             <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
               {["Ryzen 5 5600", "RX 6600 8GB", "16GB RAM", "1TB SSD", "Windows 11", "Wi‑Fi 6"].map((s) => (
-                <li key={s} className="rounded-lg border border-border bg-secondary px-4 py-3 text-sm font-medium">{s}</li>
+                <li key={s} className="rounded-xl border border-border bg-secondary/40 backdrop-blur px-4 py-3 text-sm font-medium">{s}</li>
               ))}
             </ul>
             <a href={NEWEGG} target="_blank" rel="noopener noreferrer" className="btn-primary mt-8 w-full px-6 py-4 text-lg">
@@ -151,7 +151,7 @@ function Index() {
             <p className="mt-4 text-sm text-muted-foreground">
               This is the one I need most. It will let me record and stream cleanly so I can start earning and pay people back.
             </p>
-            <div className="mt-6 rounded-xl border border-border bg-secondary p-4 text-sm leading-relaxed text-muted-foreground">
+            <div className="mt-6 rounded-2xl border border-border bg-secondary/40 p-4 text-sm leading-relaxed text-muted-foreground">
               <span className="font-semibold text-foreground">Real talk: </span>
               one person isn’t going to buy this for me. This is meant to be pooled — a few people putting their money
               together to get it. Everyone who is part of pooling gets money back over time, even before I’m fully monetized.
@@ -251,7 +251,7 @@ function Index() {
       {showReminder && !reminderDismissed && (
         <aside
           aria-label="PC goal reminder"
-          className="pc-reminder fixed inset-x-4 bottom-4 z-30 mx-auto max-w-md rounded-2xl border border-border bg-card/95 p-5 backdrop-blur-xl sm:inset-x-6 sm:bottom-6"
+          className="pc-reminder fixed inset-x-4 bottom-4 z-30 mx-auto max-w-md rounded-2xl border border-border bg-card/50 p-5 backdrop-blur-2xl backdrop-saturate-150 sm:inset-x-6 sm:bottom-6"
           style={{ boxShadow: "var(--glow), 0 24px 60px -20px rgb(0 0 0 / 60%)" }}
         >
           <button
