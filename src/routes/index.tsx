@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { POOLING_EXAMPLES } from "@/lib/pc-pooling";
 
 const NEWEGG =
-  "https://www.newegg.com/hzg-gaming-desktop-pcs-amd-radeon-graphics-amd-ryzen-5-5600-16gb-ddr4-1tb-nvme-ssd-m50/p/3D5-006P-00028";
+  "https://www.newegg.com/hzg-gaming-desktop-pcs-amd-radeon-rx-7600-amd-ryzen-5-5600-16gb-ddr4-1tb-nvme-ssd-m500/p/3D5-006P-00033";
 const KB =
   "https://www.walmart.com/ip/SteelSeries-Apex-3-TKL-RGB-Gaming-Keyboard-Tenkeyless-Water-Dust-Resistant-PC-and-USB-A/996783321";
 const MOUSE = "https://www.amazon.com/Logitech-LIGHTSPEED-Wireless-Gaming-Mouse/dp/B07CMS5Q6P";
