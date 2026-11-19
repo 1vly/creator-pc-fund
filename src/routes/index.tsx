@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
 type Part = { id: string; name: string; desc: string; price: string; href: string; store: string; anchor: string; acquired?: boolean };
 
 const PARTS: Part[] = [
-  { id: "pc", name: "HZG M500 Gaming PC", desc: "Ryzen 5 5600 + RX 6600 — records and streams cleanly. The main goal.", price: "$809", href: NEWEGG, store: "Newegg", anchor: "#pc" },
+  { id: "pc", name: "HZG M500 Gaming PC", desc: "Ryzen 5 5600 + RX 7600 — records and streams cleanly. The main goal.", price: "$869", href: NEWEGG, store: "Newegg", anchor: "#pc" },
   { id: "monitor", name: "Monitor", desc: "A clearer, more comfortable screen for long editing sessions.", price: "$100 – $200", href: MON, store: "Amazon", anchor: "#gift-monitor" },
   { id: "keyboard", name: "SteelSeries Apex 3 TKL", desc: "Tenkeyless RGB gaming keyboard — water and dust resistant.", price: "$70 – $140", href: KB, store: "Walmart", anchor: "#gift-keyboard", acquired: true },
   { id: "mouse", name: "Logitech LIGHTSPEED Mouse", desc: "Low-latency wireless gaming mouse with long battery life.", price: "$30", href: MOUSE, store: "Amazon", anchor: "#gift-mouse" },
@@ -367,7 +367,7 @@ function SectionHead({ eyebrow, title, sub }: { eyebrow: string; title: string; 
 }
 
 const PAYBACK_STEPS = [
-  { t: "You chip in", d: "Put any amount toward the $809 PC. I keep a record of who pooled and how much." },
+  { t: "You chip in", d: "Put any amount toward the $869 PC. I keep a record of who pooled and how much." },
   { t: "I start creating", d: "The PC lets me record, stream, and edit better videos consistently." },
   { t: "Paybacks start early", d: "I begin paying people back in small amounts over time — even before I’m fully monetized." },
   { t: "It grows with the channel", d: "As the channel earns more, paybacks get bigger and faster until everyone is covered." },
@@ -391,7 +391,7 @@ function Payback() {
   );
 }
 
-const SUGGESTED = ["Is the RX 6600 good for recording?", "Why does 16GB RAM matter for editing?", "Can this PC stream and record at once?"];
+const SUGGESTED = ["Is the RX 7600 good for recording?", "Why does 16GB RAM matter for editing?", "Can this PC stream and record at once?"];
 
 function AskPc() {
   const [q, setQ] = useState("");
