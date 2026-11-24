@@ -1,4 +1,4 @@
-export const PC_GOAL = 809;
+export const PC_GOAL = 869;
 
 // Round up to cents so each example covers the full goal, not slightly less.
 export function sharePerPerson(people: number): number {
